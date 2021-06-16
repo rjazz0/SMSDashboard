@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SMSDashboard</string>
+    <string name="title_sms">SMS</string>
+    <string name="title_spam">SPAM</string>
+</resources>
