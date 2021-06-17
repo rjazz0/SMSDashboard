@@ -1,4 +1,4 @@
-package com.rjasso.smsdashboard.ui.SMS;
+package com.rjasso.smsdashboard.ui.SPAM;
 
 import android.content.ContentResolver;
 
@@ -6,15 +6,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.rjasso.smsdashboard.SMSRepository;
-import com.rjasso.smsdashboard.database.Inbox;
+import com.rjasso.smsdashboard.database.Spam;
 
 import java.util.List;
 
-public class SMSViewModel extends ViewModel {
+public class SpamViewModel extends ViewModel {
 
     private SMSRepository repository;
 
-    public SMSViewModel(SMSRepository repository) {
+    public SpamViewModel(SMSRepository repository) {
         this.repository = repository;
     }
 
@@ -22,7 +22,7 @@ public class SMSViewModel extends ViewModel {
         repository.getData(contentResolver);
     }
 
-    public LiveData<List<Inbox>> getInboxMessages() {
-        return repository.getInboxMessagesLiveData();
+    public LiveData<List<Spam>> getSpamMessages() {
+        return repository.getSpamMessagesLiveData();
     }
 }

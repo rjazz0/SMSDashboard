@@ -4,42 +4,63 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.rjasso.smsdashboard.SMSRepository;
+import com.rjasso.smsdashboard.database.SMSMessagesDataBase;
+import com.rjasso.smsdashboard.database.Spam;
 import com.rjasso.smsdashboard.databinding.FragmentSpamBinding;
 
-public class SPAMFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
-    private SPAMViewModel SPAMViewModel;
-    private FragmentSpamBinding binding;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        SPAMViewModel =
-                new ViewModelProvider(this).get(SPAMViewModel.class);
+    public class SPAMFragment extends Fragment {
 
-        binding = FragmentSpamBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        private SpamViewModel viewModelSPAM;
+        private FragmentSpamBinding binding;
+        private SMSRepository repository;
+        private List<Spam> messages = new ArrayList<>();
+        private RecyclerView spamRecyclerView;
 
-        final TextView textView = binding.textHome;
-        SPAMViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        return root;
+        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            repository = new SMSRepository(SMSMessagesDataBase.getInstance(getActivity()));
+            viewModelSPAM = new ViewModelProvider(this, new SpamViewModelFactory(repository)).get(SpamViewModel.class);
+
+            binding = FragmentSpamBinding.inflate(inflater, container, false);
+            View root = binding.getRoot();
+
+            viewModelSPAM.getSpamMessages().observe(getViewLifecycleOwner(), new Observer<List<Spam>>() {
+                @Override
+                public void onChanged(List<Spam> smsMessages) {
+                    messages.clear();
+                    messages.addAll(smsMessages);
+                    spamRecyclerView.getAdapter().notifyDataSetChanged();
+                }
+            });
+
+            spamRecyclerView = binding.spamRecyclerView;
+            spamRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            spamRecyclerView.setAdapter(new SpamAdapter(messages));
+
+            return root;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            viewModelSPAM.getSMSs(getActivity().getContentResolver());
+        }
+
+        @Override
+        public void onDestroyView() {
+            super.onDestroyView();
+            binding = null;
+        }
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-}

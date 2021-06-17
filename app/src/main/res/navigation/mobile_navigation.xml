@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_sms"
-        android:name="com.rjasso.smsdashboard.ui.SPAM.SPAMFragment"
+        android:name="com.rjasso.smsdashboard.ui.SMS.SMSFragment"
         android:label="@string/title_sms"
         tools:layout="@layout/fragment_sms" />
 
     <fragment
         android:id="@+id/navigation_spam"
-        android:name="com.rjasso.smsdashboard.ui.SMS.SMSFragment"
+        android:name="com.rjasso.smsdashboard.ui.SPAM.SPAMFragment"
         android:label="@string/title_spam"
         tools:layout="@layout/fragment_spam" />
 </navigation>
